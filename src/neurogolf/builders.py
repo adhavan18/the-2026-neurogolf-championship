@@ -286,6 +286,26 @@ def make_pixel_upscale(sr: int, sc: int) -> onnx.ModelProto:
     return _finalize(nodes, inits)
 
 
+def make_fixed_crop(a: int, c: int, oh: int, ow: int) -> onnx.ModelProto:
+    """Copy the fixed window ``input[a:a+oh, c:c+ow]`` to the output's top-left.
+
+    Two ``Pad`` nodes with attribute pads (zero parameters): the first crops to
+    ``[1, 10, oh, ow]`` (the only intermediate — ``40*oh*ow`` bytes), the second
+    zero-pads back to 30x30.  Total cost is just that tiny memory footprint.
+    """
+    nodes = [
+        helper.make_node(
+            "Pad", ["input"], ["crop"], mode="constant", value=0.0,
+            pads=[0, 0, -a, -c, 0, 0, a + oh - 30, c + ow - 30],
+        ),
+        helper.make_node(
+            "Pad", ["crop"], ["output"], mode="constant", value=0.0,
+            pads=[0, 0, 0, 0, 0, 0, 30 - oh, 30 - ow],
+        ),
+    ]
+    return _finalize(nodes, [])
+
+
 def make_flat_head(
     weight: np.ndarray,
     bias: np.ndarray,

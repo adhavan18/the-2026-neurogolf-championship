@@ -714,3 +714,41 @@ def solve_flat_head(task: Task) -> Iterator[Candidate]:
         f"{h}x{w}->{oh}x{ow}",
         est_cost=f * oc + oc + 6,
     )
+
+
+# ----------------------------------------------------------------------------- #
+# Fixed-window crop solver (zero parameters)
+# ----------------------------------------------------------------------------- #
+
+
+@register
+def solve_fixed_crop(task: Task) -> Iterator[Candidate]:
+    """Tasks whose output is a fixed window ``input[a:a+oh, c:c+ow]``.
+
+    Output dims must be constant across pairs; the offset ``(a, c)`` is searched
+    over every placement that fits inside all inputs.  The network is two Pad
+    nodes with zero parameters, so this beats any other solver when applicable.
+    """
+    pairs = task.scored_pairs
+    if not pairs:
+        return
+    oh, ow = pairs[0].out_shape
+    if oh * ow == 0 or any(p.out_shape != (oh, ow) for p in pairs):
+        return
+    min_h = min(p.in_shape[0] for p in pairs)
+    min_w = min(p.in_shape[1] for p in pairs)
+    if min_h < oh or min_w < ow:
+        return
+    cands = [(a, c) for a in range(min_h - oh + 1) for c in range(min_w - ow + 1)]
+    for p in pairs:
+        gi, go = np.asarray(p.input), np.asarray(p.output)
+        cands = [(a, c) for (a, c) in cands if np.array_equal(gi[a:a + oh, c:c + ow], go)]
+        if not cands:
+            return
+    a, c = cands[0]
+    yield Candidate(
+        B.make_fixed_crop(a, c, oh, ow),
+        "fixed_crop",
+        f"window {oh}x{ow} at ({a},{c})",
+        est_cost=40 * oh * ow,
+    )
