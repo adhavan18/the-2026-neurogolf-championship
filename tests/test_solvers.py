@@ -33,6 +33,35 @@ def test_linear_conv_task053():
         return  # data not present; skip
     result, model = solve_task(load_task(53))
     assert result.solved and model is not None
-    assert result.solver == "linear_conv"
-    assert result.memory == 0  # single conv node -> no intermediate tensors
+    # cellmap also solves task053; whichever won must be cheap and correct
+    assert result.solver in ("linear_conv", "cellmap")
     assert result.points > 15.0
+
+
+def test_fixed_crop_task326():
+    if not _has(326):
+        return  # data not present; skip
+    from neurogolf.scoring import score_model
+    from neurogolf.solvers import solve_fixed_crop
+
+    task = load_task(326)
+    cands = list(solve_fixed_crop(task))
+    assert cands, "fixed_crop should apply to task326"
+    result = score_model(cands[0].model, task, 326)
+    assert result.valid
+    assert result.params == 0
+    assert result.points > 19.0
+
+
+def test_cellmap_merge_task287():
+    if not _has(287):
+        return  # data not present; skip
+    from neurogolf.scoring import score_model
+    from neurogolf.solvers import solve_cellmap
+
+    task = load_task(287)
+    cands = list(solve_cellmap(task))
+    assert cands, "cellmap (with merges) should apply to task287"
+    result = score_model(cands[0].model, task, 287)
+    assert result.valid
+    assert result.points > 13.0

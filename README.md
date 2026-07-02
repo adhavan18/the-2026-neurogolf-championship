@@ -43,15 +43,33 @@ implement even a flip/rotate, because it would shift content off the origin.
 ```
 src/neurogolf/
   data.py      # load tasks; encode/decode grids <-> [1,10,30,30] tensors
-  builders.py  # ONNX graphs: identity, gather-colormap, conv (+bias), 1x1 colormap
+  builders.py  # ONNX graph constructors (see solver table below)
   scoring.py   # faithful offline scoring — reuses vendored official neurogolf_utils
-  solvers.py   # pluggable solvers (identity, colormap, linear-conv fitter)
+  solvers.py   # pluggable solver registry (nine families, see below)
   pipeline.py  # run solvers over tasks, keep cheapest *verified* net, package zip
 scripts/
   build_submission.py   # CLI: solve -> write ONNX -> submission.zip
+  merge_shards.py       # combine parallel shard runs into one submission
 vendor/neurogolf_utils/ # official competition module (Apache-2.0), used for scoring
 tests/                  # builder/data unit tests + solver integration tests
 ```
+
+### Solver families
+
+| Solver | Applies to | Network | Typical cost |
+|---|---|---|---|
+| `identity` | output == input | `Identity` | 0 |
+| `colormap` | global color remap | `Gather` over channels | 10 |
+| `fixed_crop` | output = fixed input window | 2 × `Pad` (crop + re-pad) | mem only |
+| `linear_conv` | local linearly separable rules | 1 × `Conv` (k ≤ 7, +bias) | 100–4 910 |
+| `conv2` | non-linear local rules | `Conv→ReLU→Conv` (GD-fit) | ~1–15k |
+| `cellmap` | fixed dims, per-cell source+colormap (merges OK) | `GatherND`(+`Add`) → `Pad` | ~1–60k |
+| `upscale` | pure pixel magnification | `Pad` crop + grouped `ConvTranspose` | ~9k |
+| `const_shape` | fixed small output, any input size | `Reduce*` → `MatMul` head | ~5–230k |
+| `flat_head` | fixed dims, whole-grid linear rules | flatten → `MatMul` head | ~19–300k |
+
+Solvers only *propose* candidates; the pipeline scores each with the official
+scorer and keeps the cheapest correct one, so overlapping families are safe.
 
 **Design principle:** solvers only *propose* candidate networks; the pipeline
 verifies each one with the official scorer and keeps the cheapest that is
