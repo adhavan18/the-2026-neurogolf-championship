@@ -103,58 +103,57 @@ Run the tests:
 PYTHONPATH=src python -m pytest tests -q
 ```
 
-## Baseline results
+## Results
 
-Running `build_submission.py` over all 400 tasks with the current solvers,
-scored by the vendored official scorer:
+Running the full pipeline over all 400 tasks (four parallel shards merged with
+`scripts/merge_shards.py`), scored by the vendored official scorer:
 
-| Solver        | Tasks | Cost each | Points each | Subtotal |
-|---------------|------:|----------:|------------:|---------:|
-| `colormap`    |     4 |        10 |      22.697 |   90.790 |
-| `linear_conv` |    15 |       910 |      18.187 |  272.798 |
-| **Total**     |  **19** |         — |           — | **363.588** |
+| Solver        | Tasks | Points |
+|---------------|------:|-------:|
+| `linear_conv` |    30 | 537.82 |
+| `flat_head`   |    32 | 447.22 |
+| `cellmap`     |    19 | 316.43 |
+| `const_shape` |    12 | 178.71 |
+| `colormap`    |     4 |  90.79 |
+| `fixed_crop`  |     2 |  39.04 |
+| `upscale`     |     2 |  32.57 |
+| **Total**     | **101** | **1642.59** |
 
-- **Solved:** 19 / 400 tasks; **local score ≈ 363.6** / 10 000.
-- **Color-maps** (`task016, 276, 309, 337`) use a 10-parameter `Gather` that
-  permutes/selects color channels — the cheapest correct form for a global
-  color remap.
-- **Linear convs** (`task053, 073, 095, 127, 147, 171, 230, 258, 266, 272, 282,
-  283, 294, 317, 331`) are a single 3×3 `Conv` (+bias) whose integer weights are
-  fit by a hard-margin perceptron; each is a genuinely local, linearly-separable
-  rule. Memory cost is 0 (single node), so cost = params = 910.
-
-Every network in `submission.zip` passes the official verifier on
-`train + test + arc-gen`. This is a **verified baseline**, not a competitive
-entry — see below for why most tasks need bespoke networks and where to go next.
+- **Solved: 101 / 400 tasks, local score ≈ 1642.6** / 10 000 (per-task results
+  in `results/baseline_manifest.json`).
+- Every network in `submission.zip` passes the official verifier on
+  `train + test + arc-gen`; the private hold-out remains the usual caveat.
+- `conv2` (Conv→ReLU→Conv, gradient-fit) solved **zero** tasks in this sweep —
+  its GD fitting rarely reaches *exact* solutions. Improving that fit (integer
+  rounding, better initialisation, logic-synthesis instead of GD) is the
+  clearest next lever on the ~160 unsolved same-shape tasks.
 
 ## Scope & roadmap
 
 The empirical reality (confirmed by analysis in this repo and by the public
-leaderboard): only a small family of tasks is *automatically* solvable by a
-single static op. Across the 400 tasks there are **no** pure identity/constant
-tasks, **4** clean global color-maps, and a single linear `k×k` conv reproduces
-only ~1 in 40 of the same-shape tasks. The remaining ~380 tasks need **bespoke,
-multi-op networks designed per task** — which is exactly why this is a
-months-long competition.
+leaderboard): across the 400 tasks there are **no** pure identity/constant
+tasks and only a handful of single-op transforms. 190 tasks have fixed
+input/output dims (where `cellmap`/`flat_head` operate); the rest mix variable
+sizes with non-linear logic. The ~300 unsolved tasks need **bespoke, multi-op
+networks designed per task** — which is exactly why this is a months-long
+competition.
 
-The automated solvers here therefore form a **verified baseline and a
-platform**, not a leaderboard-topping entry. Natural next steps, in rough order
-of expected payoff:
+Next steps, in rough order of expected payoff:
 
-1. **Multi-layer conv nets (Conv→ReLU→Conv).** A single linear conv can't do
-   non-linear local logic (fill 3×3 holes, denoise, dilate/erode, outline,
-   local majority). Two conv layers with a ReLU can — this is the biggest lever
-   for shape-preserving *local* rules, and stays cheap (memory only counts the
-   one hidden activation).
-2. **Size-aware geometric transforms.** Flip / rotate / transpose are 0-param in
-   principle but blocked by top-left anchoring for variable sizes. Worth
-   researching static constructions (e.g. per-size handling, or ops that are
-   invariant to the clear border).
-3. **Per-family hand-crafted solvers** for the common ARC motifs present in the
-   same-shape set (borders/frames, gravity, symmetry completion, flood fill,
-   connect-the-dots), each expressed with the cheapest static op sequence.
-4. **Cost minimisation of solved tasks** — e.g. pruning conv kernels, preferring
-   `Gather` over `Conv`, and shrinking `Constant`s.
+1. **Make `conv2` actually converge.** Gradient descent with a margin loss
+   solved zero tasks; exact solutions likely need integer weight search,
+   boolean-logic synthesis over one-hot channels, or perceptron-style layerwise
+   fitting. ~160 same-shape tasks are the prize.
+2. **Richer fixed-dims heads.** `flat_head` is linear; adding a hidden ReLU
+   layer (fit per output cell) would capture non-linear whole-grid rules while
+   fixed dims keep everything static.
+3. **Cost-golf solved tasks** — prune zero weight columns (feature `Gather`),
+   quantize `flat_head` heads, replace `MatMul` heads with sparse ops. Each
+   halving of cost is +0.69 pts/task.
+4. **Size-aware geometric transforms** for variable-size tasks (flip/rotate
+   blocked by top-left anchoring) — needs clever static constructions.
+5. **Per-family hand-crafted solvers** for common ARC motifs (borders/frames,
+   gravity, symmetry completion, flood fill).
 
 Because every candidate is checked by the official scorer before it's accepted,
 new solvers can be added incrementally with confidence that the submission stays

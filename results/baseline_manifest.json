@@ -1,14 +1,14 @@
 [
   {
     "task": 1,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "3x3->9x9",
+    "params": 73716,
+    "memory": 10440,
+    "cost": 84156,
+    "points": 13.65957250167509,
+    "n_candidates": 1
   },
   {
     "task": 2,
@@ -23,14 +23,14 @@
   },
   {
     "task": 3,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "6x3->9x3",
+    "params": 48876,
+    "memory": 4680,
+    "cost": 53556,
+    "points": 14.11151688558273,
+    "n_candidates": 1
   },
   {
     "task": 4,
@@ -56,25 +56,25 @@
   },
   {
     "task": 6,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "3x7->3x3",
+    "params": 18996,
+    "memory": 2760,
+    "cost": 21756,
+    "points": 15.01235513945715,
+    "n_candidates": 1
   },
   {
     "task": 7,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "7x7->7x7",
+    "params": 240596,
+    "memory": 9800,
+    "cost": 250396,
+    "points": 12.569201056360408,
+    "n_candidates": 1
   },
   {
     "task": 8,
@@ -155,14 +155,14 @@
   },
   {
     "task": 15,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "linear_conv",
+    "detail": "k=3 +bias",
+    "params": 910,
+    "memory": 0,
+    "cost": 910,
+    "points": 18.186555400489105,
+    "n_candidates": 1
   },
   {
     "task": 16,
@@ -173,7 +173,7 @@
     "memory": 0,
     "cost": 10,
     "points": 22.697414907005953,
-    "n_candidates": 3
+    "n_candidates": 5
   },
   {
     "task": 17,
@@ -232,14 +232,14 @@
   },
   {
     "task": 22,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "const_shape",
+    "detail": "3x3 blocks=rm,cm",
+    "params": 54096,
+    "memory": 8280,
+    "cost": 62376,
+    "points": 13.959064135010564,
+    "n_candidates": 1
   },
   {
     "task": 23,
@@ -276,14 +276,14 @@
   },
   {
     "task": 26,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "5x7->5x3",
+    "params": 52656,
+    "memory": 4600,
+    "cost": 57256,
+    "points": 14.044712280581567,
+    "n_candidates": 1
   },
   {
     "task": 27,
@@ -408,25 +408,25 @@
   },
   {
     "task": 38,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "9x9->1x5",
+    "params": 40556,
+    "memory": 7080,
+    "cost": 47636,
+    "points": 14.228655943112113,
+    "n_candidates": 1
   },
   {
     "task": 39,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "10x10->3x3",
+    "params": 90096,
+    "memory": 9080,
+    "cost": 99176,
+    "points": 13.495348671482017,
+    "n_candidates": 1
   },
   {
     "task": 40,
@@ -580,7 +580,7 @@
     "memory": 0,
     "cost": 910,
     "points": 18.186555400489105,
-    "n_candidates": 1
+    "n_candidates": 3
   },
   {
     "task": 54,
@@ -606,14 +606,14 @@
   },
   {
     "task": 56,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "3x3->1x1",
+    "params": 916,
+    "memory": 840,
+    "cost": 1756,
+    "points": 17.529206225804938,
+    "n_candidates": 2
   },
   {
     "task": 57,
@@ -650,14 +650,14 @@
   },
   {
     "task": 60,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "cellmap",
+    "detail": "5x11->5x11",
+    "params": 17612,
+    "memory": 35200,
+    "cost": 52812,
+    "points": 14.125506283400908,
+    "n_candidates": 1
   },
   {
     "task": 61,
@@ -800,7 +800,7 @@
     "memory": 0,
     "cost": 910,
     "points": 18.186555400489105,
-    "n_candidates": 1
+    "n_candidates": 3
   },
   {
     "task": 74,
@@ -881,14 +881,14 @@
   },
   {
     "task": 81,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "7x7->7x7",
+    "params": 240596,
+    "memory": 9800,
+    "cost": 250396,
+    "points": 12.569201056360408,
+    "n_candidates": 2
   },
   {
     "task": 82,
@@ -903,14 +903,14 @@
   },
   {
     "task": 83,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "cellmap",
+    "detail": "3x4->6x8",
+    "params": 1932,
+    "memory": 3840,
+    "cost": 5772,
+    "points": 16.339226080106236,
+    "n_candidates": 2
   },
   {
     "task": 84,
@@ -947,14 +947,14 @@
   },
   {
     "task": 87,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "cellmap",
+    "detail": "3x3->3x3",
+    "params": 372,
+    "memory": 720,
+    "cost": 1092,
+    "points": 18.00423384369515,
+    "n_candidates": 3
   },
   {
     "task": 88,
@@ -1057,14 +1057,14 @@
   },
   {
     "task": 97,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "linear_conv",
+    "detail": "k=3 +bias",
+    "params": 910,
+    "memory": 0,
+    "cost": 910,
+    "points": 18.186555400489105,
+    "n_candidates": 1
   },
   {
     "task": 98,
@@ -1079,25 +1079,25 @@
   },
   {
     "task": 99,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "linear_conv",
+    "detail": "k=7 +bias",
+    "params": 4910,
+    "memory": 0,
+    "cost": 4910,
+    "points": 16.500970779211436,
+    "n_candidates": 1
   },
   {
     "task": 100,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "const_shape",
+    "detail": "2x2 blocks=rs",
+    "params": 12046,
+    "memory": 2880,
+    "cost": 14926,
+    "points": 15.389140062308668,
+    "n_candidates": 2
   },
   {
     "task": 101,
@@ -1134,14 +1134,14 @@
   },
   {
     "task": 104,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "3x3->9x9",
+    "params": 73716,
+    "memory": 10440,
+    "cost": 84156,
+    "points": 13.65957250167509,
+    "n_candidates": 1
   },
   {
     "task": 105,
@@ -1178,14 +1178,14 @@
   },
   {
     "task": 108,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "cellmap",
+    "detail": "10x10->20x20",
+    "params": 16012,
+    "memory": 32000,
+    "cost": 48012,
+    "points": 14.220793741354765,
+    "n_candidates": 1
   },
   {
     "task": 109,
@@ -1266,14 +1266,14 @@
   },
   {
     "task": 116,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "cellmap",
+    "detail": "3x4->6x4",
+    "params": 972,
+    "memory": 1920,
+    "cost": 2892,
+    "points": 17.030296416721345,
+    "n_candidates": 2
   },
   {
     "task": 117,
@@ -1310,14 +1310,14 @@
   },
   {
     "task": 120,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "linear_conv",
+    "detail": "k=3 +bias",
+    "params": 910,
+    "memory": 0,
+    "cost": 910,
+    "points": 18.186555400489105,
+    "n_candidates": 1
   },
   {
     "task": 121,
@@ -1332,14 +1332,14 @@
   },
   {
     "task": 122,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "linear_conv",
+    "detail": "k=5 +bias",
+    "params": 2510,
+    "memory": 0,
+    "cost": 2510,
+    "points": 17.17196196787417,
+    "n_candidates": 1
   },
   {
     "task": 123,
@@ -1409,25 +1409,25 @@
   },
   {
     "task": 129,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "linear_conv",
+    "detail": "k=5 +bias",
+    "params": 2510,
+    "memory": 0,
+    "cost": 2510,
+    "points": 17.17196196787417,
+    "n_candidates": 2
   },
   {
     "task": 130,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "9x9->3x3",
+    "params": 72996,
+    "memory": 7560,
+    "cost": 80556,
+    "points": 13.703292126273249,
+    "n_candidates": 1
   },
   {
     "task": 131,
@@ -1464,25 +1464,25 @@
   },
   {
     "task": 134,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "const_shape",
+    "detail": "3x3 blocks=rm,cm",
+    "params": 54096,
+    "memory": 8280,
+    "cost": 62376,
+    "points": 13.959064135010564,
+    "n_candidates": 1
   },
   {
     "task": 135,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "fixed_crop",
+    "detail": "window 3x3 at (0,6)",
+    "params": 0,
+    "memory": 360,
+    "cost": 360,
+    "points": 19.113895968549844,
+    "n_candidates": 3
   },
   {
     "task": 136,
@@ -1526,18 +1526,18 @@
     "memory": null,
     "cost": null,
     "points": 0.0,
-    "n_candidates": 0
+    "n_candidates": 1
   },
   {
     "task": 140,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "linear_conv",
+    "detail": "k=5 +bias",
+    "params": 2510,
+    "memory": 0,
+    "cost": 2510,
+    "points": 17.17196196787417,
+    "n_candidates": 3
   },
   {
     "task": 141,
@@ -1552,14 +1552,14 @@
   },
   {
     "task": 142,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "cellmap",
+    "detail": "3x3->6x6",
+    "params": 1452,
+    "memory": 2880,
+    "cost": 4332,
+    "points": 16.62621539187912,
+    "n_candidates": 2
   },
   {
     "task": 143,
@@ -1574,14 +1574,14 @@
   },
   {
     "task": 144,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "9x4->4x4",
+    "params": 57766,
+    "memory": 4800,
+    "cost": 62566,
+    "points": 13.95602272145129,
+    "n_candidates": 1
   },
   {
     "task": 145,
@@ -1596,14 +1596,14 @@
   },
   {
     "task": 146,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "9x3->3x3",
+    "params": 24396,
+    "memory": 3240,
+    "cost": 27636,
+    "points": 14.773125450391314,
+    "n_candidates": 2
   },
   {
     "task": 147,
@@ -1651,36 +1651,36 @@
   },
   {
     "task": 151,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "linear_conv",
+    "detail": "k=3 +bias",
+    "params": 910,
+    "memory": 0,
+    "cost": 910,
+    "points": 18.186555400489105,
+    "n_candidates": 1
   },
   {
     "task": 152,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "cellmap",
+    "detail": "3x3->6x6",
+    "params": 1452,
+    "memory": 2880,
+    "cost": 4332,
+    "points": 16.62621539187912,
+    "n_candidates": 3
   },
   {
     "task": 153,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "const_shape",
+    "detail": "3x3 blocks=rm,cm",
+    "params": 54096,
+    "memory": 8280,
+    "cost": 62376,
+    "points": 13.959064135010564,
+    "n_candidates": 2
   },
   {
     "task": 154,
@@ -1757,7 +1757,7 @@
     "memory": null,
     "cost": null,
     "points": 0.0,
-    "n_candidates": 0
+    "n_candidates": 1
   },
   {
     "task": 161,
@@ -1794,14 +1794,14 @@
   },
   {
     "task": 164,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "cellmap",
+    "detail": "3x3->3x6",
+    "params": 732,
+    "memory": 1440,
+    "cost": 2172,
+    "points": 17.316596318946175,
+    "n_candidates": 2
   },
   {
     "task": 165,
@@ -1882,14 +1882,14 @@
   },
   {
     "task": 172,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "cellmap",
+    "detail": "3x3->6x3",
+    "params": 732,
+    "memory": 1440,
+    "cost": 2172,
+    "points": 17.316596318946175,
+    "n_candidates": 3
   },
   {
     "task": 173,
@@ -1959,36 +1959,36 @@
   },
   {
     "task": 179,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "cellmap",
+    "detail": "3x3->3x3",
+    "params": 372,
+    "memory": 720,
+    "cost": 1092,
+    "points": 18.00423384369515,
+    "n_candidates": 2
   },
   {
     "task": 180,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "8x8->4x4",
+    "params": 102566,
+    "memory": 7040,
+    "cost": 109606,
+    "points": 13.395352603476827,
+    "n_candidates": 1
   },
   {
     "task": 181,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "6x9->6x9",
+    "params": 292146,
+    "memory": 10800,
+    "cost": 302946,
+    "points": 12.378690149212959,
+    "n_candidates": 1
   },
   {
     "task": 182,
@@ -2036,14 +2036,14 @@
   },
   {
     "task": 186,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "linear_conv",
+    "detail": "k=5 +bias",
+    "params": 2510,
+    "memory": 0,
+    "cost": 2510,
+    "points": 17.17196196787417,
+    "n_candidates": 2
   },
   {
     "task": 187,
@@ -2069,14 +2069,14 @@
   },
   {
     "task": 189,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "9x9->6x6",
+    "params": 291966,
+    "memory": 10800,
+    "cost": 302766,
+    "points": 12.379284491095895,
+    "n_candidates": 1
   },
   {
     "task": 190,
@@ -2124,14 +2124,14 @@
   },
   {
     "task": 194,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "cellmap",
+    "detail": "3x3->6x6",
+    "params": 1452,
+    "memory": 2880,
+    "cost": 4332,
+    "points": 16.62621539187912,
+    "n_candidates": 3
   },
   {
     "task": 195,
@@ -2300,25 +2300,25 @@
   },
   {
     "task": 210,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "cellmap",
+    "detail": "3x3->6x3",
+    "params": 732,
+    "memory": 1440,
+    "cost": 2172,
+    "points": 17.316596318946175,
+    "n_candidates": 2
   },
   {
     "task": 211,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "cellmap",
+    "detail": "3x2->9x4",
+    "params": 1452,
+    "memory": 2880,
+    "cost": 4332,
+    "points": 16.62621539187912,
+    "n_candidates": 2
   },
   {
     "task": 212,
@@ -2344,14 +2344,14 @@
   },
   {
     "task": 214,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "cellmap",
+    "detail": "3x11->3x11",
+    "params": 1332,
+    "memory": 2640,
+    "cost": 3972,
+    "points": 16.712974974834935,
+    "n_candidates": 2
   },
   {
     "task": 215,
@@ -2410,14 +2410,14 @@
   },
   {
     "task": 220,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "linear_conv",
+    "detail": "k=3 +bias",
+    "params": 910,
+    "memory": 0,
+    "cost": 910,
+    "points": 18.186555400489105,
+    "n_candidates": 1
   },
   {
     "task": 221,
@@ -2443,14 +2443,14 @@
   },
   {
     "task": 223,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "upscale",
+    "detail": "3x3",
+    "params": 90,
+    "memory": 4000,
+    "cost": 4090,
+    "points": 16.68369975096315,
+    "n_candidates": 3
   },
   {
     "task": 224,
@@ -2465,14 +2465,14 @@
   },
   {
     "task": 225,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "6x6->6x6",
+    "params": 129966,
+    "memory": 7200,
+    "cost": 137166,
+    "points": 13.171052849847975,
+    "n_candidates": 1
   },
   {
     "task": 226,
@@ -2487,14 +2487,14 @@
   },
   {
     "task": 227,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "8x4->4x4",
+    "params": 51366,
+    "memory": 4480,
+    "cost": 55846,
+    "points": 14.069646818479335,
+    "n_candidates": 1
   },
   {
     "task": 228,
@@ -2575,14 +2575,14 @@
   },
   {
     "task": 235,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "4x14->3x3",
+    "params": 50496,
+    "memory": 5560,
+    "cost": 56056,
+    "points": 14.06589352994963,
+    "n_candidates": 1
   },
   {
     "task": 236,
@@ -2773,14 +2773,14 @@
   },
   {
     "task": 253,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "const_shape",
+    "detail": "4x4 blocks=rm,cm",
+    "params": 96166,
+    "memory": 9120,
+    "cost": 105286,
+    "points": 13.435564264183315,
+    "n_candidates": 1
   },
   {
     "task": 254,
@@ -2817,14 +2817,14 @@
   },
   {
     "task": 257,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "9x9->4x4",
+    "params": 129766,
+    "memory": 8400,
+    "cost": 138166,
+    "points": 13.163788860212735,
+    "n_candidates": 1
   },
   {
     "task": 258,
@@ -2861,25 +2861,25 @@
   },
   {
     "task": 261,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "linear_conv",
+    "detail": "k=3 +bias",
+    "params": 910,
+    "memory": 0,
+    "cost": 910,
+    "points": 18.186555400489105,
+    "n_candidates": 1
   },
   {
     "task": 262,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "3x3->3x3",
+    "params": 8196,
+    "memory": 1800,
+    "cost": 9996,
+    "points": 15.790059708045156,
+    "n_candidates": 2
   },
   {
     "task": 263,
@@ -2912,7 +2912,7 @@
     "memory": null,
     "cost": null,
     "points": 0.0,
-    "n_candidates": 0
+    "n_candidates": 1
   },
   {
     "task": 266,
@@ -2923,18 +2923,18 @@
     "memory": 0,
     "cost": 910,
     "points": 18.186555400489105,
-    "n_candidates": 1
+    "n_candidates": 2
   },
   {
     "task": 267,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "7x7->7x7",
+    "params": 240596,
+    "memory": 9800,
+    "cost": 250396,
+    "points": 12.569201056360408,
+    "n_candidates": 1
   },
   {
     "task": 268,
@@ -3004,14 +3004,14 @@
   },
   {
     "task": 274,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "const_shape",
+    "detail": "3x3 blocks=rs",
+    "params": 27096,
+    "memory": 3480,
+    "cost": 30576,
+    "points": 14.672029333519946,
+    "n_candidates": 1
   },
   {
     "task": 275,
@@ -3147,14 +3147,14 @@
   },
   {
     "task": 287,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "cellmap",
+    "detail": "16x16->16x16",
+    "params": 20492,
+    "memory": 40960,
+    "cost": 61452,
+    "points": 13.97398833874945,
+    "n_candidates": 1
   },
   {
     "task": 288,
@@ -3191,14 +3191,14 @@
   },
   {
     "task": 291,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "const_shape",
+    "detail": "1x1 blocks=rm",
+    "params": 3016,
+    "memory": 2520,
+    "cost": 5536,
+    "points": 16.380972502702495,
+    "n_candidates": 1
   },
   {
     "task": 292,
@@ -3246,14 +3246,14 @@
   },
   {
     "task": 296,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "5x7->3x3",
+    "params": 31596,
+    "memory": 3880,
+    "cost": 35476,
+    "points": 14.523388309503657,
+    "n_candidates": 1
   },
   {
     "task": 297,
@@ -3279,14 +3279,14 @@
   },
   {
     "task": 299,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "6x6->6x6",
+    "params": 129966,
+    "memory": 7200,
+    "cost": 137166,
+    "points": 13.171052849847975,
+    "n_candidates": 1
   },
   {
     "task": 300,
@@ -3367,14 +3367,14 @@
   },
   {
     "task": 307,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "upscale",
+    "detail": "2x2",
+    "params": 40,
+    "memory": 9000,
+    "cost": 9040,
+    "points": 15.890585546613778,
+    "n_candidates": 1
   },
   {
     "task": 308,
@@ -3411,14 +3411,14 @@
   },
   {
     "task": 311,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "cellmap",
+    "detail": "3x3->3x6",
+    "params": 732,
+    "memory": 1440,
+    "cost": 2172,
+    "points": 17.316596318946175,
+    "n_candidates": 2
   },
   {
     "task": 312,
@@ -3455,25 +3455,25 @@
   },
   {
     "task": 315,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "3x3->9x9",
+    "params": 73716,
+    "memory": 10440,
+    "cost": 84156,
+    "points": 13.65957250167509,
+    "n_candidates": 1
   },
   {
     "task": 316,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "const_shape",
+    "detail": "3x3 blocks=cm",
+    "params": 27096,
+    "memory": 3480,
+    "cost": 30576,
+    "points": 14.672029333519946,
+    "n_candidates": 1
   },
   {
     "task": 317,
@@ -3484,18 +3484,18 @@
     "memory": 0,
     "cost": 910,
     "points": 18.186555400489105,
-    "n_candidates": 1
+    "n_candidates": 2
   },
   {
     "task": 318,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "9x4->4x4",
+    "params": 57766,
+    "memory": 4800,
+    "cost": 62566,
+    "points": 13.95602272145129,
+    "n_candidates": 1
   },
   {
     "task": 319,
@@ -3521,25 +3521,25 @@
   },
   {
     "task": 321,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "4x14->4x4",
+    "params": 89766,
+    "memory": 6400,
+    "cost": 96166,
+    "points": 13.52616885617086,
+    "n_candidates": 1
   },
   {
     "task": 322,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "linear_conv",
+    "detail": "k=5 +bias",
+    "params": 2510,
+    "memory": 0,
+    "cost": 2510,
+    "points": 17.17196196787417,
+    "n_candidates": 2
   },
   {
     "task": 323,
@@ -3576,25 +3576,25 @@
   },
   {
     "task": 326,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "fixed_crop",
+    "detail": "window 2x2 at (0,0)",
+    "params": 0,
+    "memory": 160,
+    "cost": 160,
+    "points": 19.924826184766175,
+    "n_candidates": 2
   },
   {
     "task": 327,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "3x3->6x6",
+    "params": 32766,
+    "memory": 5040,
+    "cost": 37806,
+    "points": 14.459776900829889,
+    "n_candidates": 1
   },
   {
     "task": 328,
@@ -3664,14 +3664,14 @@
   },
   {
     "task": 334,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "5x5->3x3",
+    "params": 22596,
+    "memory": 3080,
+    "cost": 25676,
+    "points": 14.846688017568331,
+    "n_candidates": 2
   },
   {
     "task": 335,
@@ -3774,14 +3774,14 @@
   },
   {
     "task": 344,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "linear_conv",
+    "detail": "k=3 +bias",
+    "params": 910,
+    "memory": 0,
+    "cost": 910,
+    "points": 18.186555400489105,
+    "n_candidates": 1
   },
   {
     "task": 345,
@@ -3796,25 +3796,25 @@
   },
   {
     "task": 346,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "const_shape",
+    "detail": "1x1 blocks=rm",
+    "params": 3016,
+    "memory": 2520,
+    "cost": 5536,
+    "points": 16.380972502702495,
+    "n_candidates": 1
   },
   {
     "task": 347,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "3x6->3x3",
+    "params": 16296,
+    "memory": 2520,
+    "cost": 18816,
+    "points": 15.157537149301646,
+    "n_candidates": 1
   },
   {
     "task": 348,
@@ -3862,14 +3862,14 @@
   },
   {
     "task": 352,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "linear_conv",
+    "detail": "k=3 +bias",
+    "params": 910,
+    "memory": 0,
+    "cost": 910,
+    "points": 18.186555400489105,
+    "n_candidates": 1
   },
   {
     "task": 353,
@@ -3895,14 +3895,14 @@
   },
   {
     "task": 355,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "const_shape",
+    "detail": "1x1 blocks=rs",
+    "params": 3016,
+    "memory": 2520,
+    "cost": 5536,
+    "points": 16.380972502702495,
+    "n_candidates": 1
   },
   {
     "task": 356,
@@ -4093,14 +4093,14 @@
   },
   {
     "task": 373,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "cellmap",
+    "detail": "2x6->2x6",
+    "params": 492,
+    "memory": 960,
+    "cost": 1452,
+    "points": 17.71930280461526,
+    "n_candidates": 3
   },
   {
     "task": 374,
@@ -4170,14 +4170,14 @@
   },
   {
     "task": 380,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "cellmap",
+    "detail": "3x3->3x3",
+    "params": 372,
+    "memory": 720,
+    "cost": 1092,
+    "points": 18.00423384369515,
+    "n_candidates": 2
   },
   {
     "task": 381,
@@ -4225,25 +4225,25 @@
   },
   {
     "task": 385,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "cellmap",
+    "detail": "10x4->10x4",
+    "params": 1612,
+    "memory": 3200,
+    "cost": 4812,
+    "points": 16.521131922905433,
+    "n_candidates": 2
   },
   {
     "task": 386,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "4x7->4x3",
+    "params": 33726,
+    "memory": 3680,
+    "cost": 37406,
+    "points": 14.470413601657055,
+    "n_candidates": 1
   },
   {
     "task": 387,
@@ -4269,14 +4269,14 @@
   },
   {
     "task": 389,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "linear_conv",
+    "detail": "k=5 +bias",
+    "params": 2510,
+    "memory": 0,
+    "cost": 2510,
+    "points": 17.17196196787417,
+    "n_candidates": 1
   },
   {
     "task": 390,
@@ -4313,14 +4313,14 @@
   },
   {
     "task": 393,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "const_shape",
+    "detail": "3x1 blocks=rm,cm",
+    "params": 18036,
+    "memory": 7560,
+    "cost": 25596,
+    "points": 14.849808631740649,
+    "n_candidates": 1
   },
   {
     "task": 394,
@@ -4335,14 +4335,14 @@
   },
   {
     "task": 395,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "flat_head",
+    "detail": "6x3->3x3",
+    "params": 16296,
+    "memory": 2520,
+    "cost": 18816,
+    "points": 15.157537149301646,
+    "n_candidates": 1
   },
   {
     "task": 396,
@@ -4379,14 +4379,14 @@
   },
   {
     "task": 399,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "const_shape",
+    "detail": "3x3 blocks=rs",
+    "params": 27096,
+    "memory": 3480,
+    "cost": 30576,
+    "points": 14.672029333519946,
+    "n_candidates": 1
   },
   {
     "task": 400,
