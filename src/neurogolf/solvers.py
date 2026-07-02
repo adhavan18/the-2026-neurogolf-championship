@@ -548,11 +548,10 @@ def _cellmap_scan(in_f: np.ndarray, out_f: np.ndarray, hw: int, ohw: int):
             ins = u // 10
             if len(ins) != len(np.unique(ins)):
                 continue  # output color not a function of this input cell
-            outs = u % 10
-            if len(outs) != len(np.unique(outs)):
-                continue  # color merge: a Gather can't split one source one-hot
+            # Color merges (many input colors -> one output color) are fine: the
+            # builder emits one GatherND table per merge rank and sums them.
             src[dst] = s
-            cmap[dst] = {int(i): int(o) for i, o in zip(ins, outs)}
+            cmap[dst] = {int(i): int(o) for i, o in zip(ins, u % 10)}
             remaining.discard(dst)
     if remaining:
         return None
@@ -571,7 +570,7 @@ def _cellmap_consistent(in_f, out_f, src, cmap) -> bool:
 
 
 def _detect_cellmap(task: Task):
-    """Detect ``output[r,c] = f_rc(input[src_rc])`` with per-cell injective color maps.
+    """Detect ``output[r,c] = f_rc(input[src_rc])`` with per-cell color maps.
 
     Requires every scored pair to share fixed input dims (h, w) and fixed
     output dims (oh, ow).  Detection first runs on a subsample of pairs for
@@ -612,7 +611,7 @@ def _detect_cellmap(task: Task):
 @register
 def solve_cellmap(task: Task) -> Iterator[Candidate]:
     """GatherND network for fixed-dims tasks where each output cell copies
-    (through a per-cell injective color map) one fixed input cell."""
+    (through a per-cell color map, merges included) one fixed input cell."""
     detected = _detect_cellmap(task)
     if detected is None:
         return

@@ -210,33 +210,54 @@ def make_cellmap_gather(
 
     ``src[d]`` is the flat input-cell index feeding output cell ``d`` (row-major
     over ``oh x ow``); ``cmap[d]`` maps input color -> output color for that
-    cell (injective).  Index tensor ``idx[10, oh, ow, 4]`` holds the coordinate
+    cell.  Index tensor ``idx[10, oh, ow, 4]`` holds the coordinate
     ``(0, cin, r', c')`` whose one-hot value lands in output channel ``o`` at
     ``(r, c)``; channels a cell never produces read the dead coordinate
     ``(0, 0, 29, 29)``, which is guaranteed all-zero because the (fixed) input
-    grid is smaller than 30x30.  Requires opset >= 11 for GatherND (13 used;
-    verified compatible with the official scorer).
+    grid is smaller than 30x30.
+
+    Color *merges* (several input colors mapping to one output color) are
+    handled with one extra index table per merge rank, summed with ``Add``: at
+    most one of the gathered one-hots is 1 per cell, so the sum stays exact.
+    Requires opset >= 11 for GatherND (13 used; verified compatible with the
+    official scorer).
     """
-    idx = np.zeros((CHANNELS, oh, ow, 4), dtype=np.int64)
-    idx[..., 2] = 29
-    idx[..., 3] = 29  # dead coordinate: beyond any grid < 30x30
+    tables: list[np.ndarray] = []
+
+    def _table(k: int) -> np.ndarray:
+        while len(tables) <= k:
+            t = np.zeros((CHANNELS, oh, ow, 4), dtype=np.int64)
+            t[..., 2] = 29
+            t[..., 3] = 29  # dead coordinate: beyond any grid < 30x30
+            tables.append(t)
+        return tables[k]
+
+    _table(0)
     for d in range(oh * ow):
         r, c = divmod(d, ow)
         rs, cs = divmod(int(src[d]), w)
-        inv = {o: i for i, o in cmap[d].items()}
-        for o in range(CHANNELS):
-            if o in inv:
-                idx[o, r, c] = [0, inv[o], rs, cs]
+        by_out: Dict[int, list] = {}
+        for cin, o in cmap[d].items():
+            by_out.setdefault(o, []).append(cin)
+        for o, cins in by_out.items():
+            for k, cin in enumerate(cins):
+                _table(k)[o, r, c] = [0, cin, rs, cs]
     inits = [
-        helper.make_tensor("idx", TensorProto.INT64, [CHANNELS, oh, ow, 4], idx.reshape(-1).tolist()),
         helper.make_tensor("oshape", TensorProto.INT64, [4], [1, CHANNELS, oh, ow]),
         helper.make_tensor("pads", TensorProto.INT64, [8], [0, 0, 0, 0, 0, 0, 30 - oh, 30 - ow]),
     ]
-    nodes = [
-        helper.make_node("GatherND", ["input", "idx"], ["g"]),  # [10, oh, ow]
-        helper.make_node("Reshape", ["g", "oshape"], ["small"]),
-        helper.make_node("Pad", ["small", "pads"], ["output"], mode="constant"),
-    ]
+    nodes = []
+    for k, t in enumerate(tables):
+        inits.append(
+            helper.make_tensor(f"idx{k}", TensorProto.INT64, [CHANNELS, oh, ow, 4], t.reshape(-1).tolist())
+        )
+        nodes.append(helper.make_node("GatherND", ["input", f"idx{k}"], [f"g{k}"]))
+    acc = "g0"
+    for k in range(1, len(tables)):
+        nodes.append(helper.make_node("Add", [acc, f"g{k}"], [f"sum{k}"]))
+        acc = f"sum{k}"
+    nodes.append(helper.make_node("Reshape", [acc, "oshape"], ["small"]))
+    nodes.append(helper.make_node("Pad", ["small", "pads"], ["output"], mode="constant"))
     return _finalize(nodes, inits, opset=13)
 
 
