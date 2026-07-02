@@ -533,26 +533,35 @@ _CELLMAP_DETECT_PAIRS = 64
 
 
 def _cellmap_scan(in_f: np.ndarray, out_f: np.ndarray, hw: int, ohw: int):
-    """Assign to every output cell a source input cell + injective color map."""
+    """Assign to every output cell a source input cell + per-cell color map.
+
+    Two passes: the first only accepts *injective* maps (one GatherND table);
+    cells left over get a second pass that also accepts color merges (the
+    builder emits one extra table per merge rank, so merges are strictly more
+    expensive and must not shadow an injective source elsewhere).
+    """
     src = np.full(ohw, -1)
     cmap: list = [None] * ohw
     remaining = set(range(ohw))
-    for s in range(hw):
+    for allow_merges in (False, True):
+        for s in range(hw):
+            if not remaining:
+                break
+            a = in_f[:, s]
+            todo = list(remaining)
+            code = a[:, None] * 10 + out_f[:, todo]
+            for j, dst in enumerate(todo):
+                u = np.unique(code[:, j])
+                ins = u // 10
+                if len(ins) != len(np.unique(ins)):
+                    continue  # output color not a function of this input cell
+                if not allow_merges and len(np.unique(u % 10)) != len(u):
+                    continue  # merge: defer to the second pass
+                src[dst] = s
+                cmap[dst] = {int(i): int(o) for i, o in zip(ins, u % 10)}
+                remaining.discard(dst)
         if not remaining:
             break
-        a = in_f[:, s]
-        todo = list(remaining)
-        code = a[:, None] * 10 + out_f[:, todo]
-        for j, dst in enumerate(todo):
-            u = np.unique(code[:, j])
-            ins = u // 10
-            if len(ins) != len(np.unique(ins)):
-                continue  # output color not a function of this input cell
-            # Color merges (many input colors -> one output color) are fine: the
-            # builder emits one GatherND table per merge rank and sums them.
-            src[dst] = s
-            cmap[dst] = {int(i): int(o) for i, o in zip(ins, u % 10)}
-            remaining.discard(dst)
     if remaining:
         return None
     return src, cmap
