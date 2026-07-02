@@ -1,0 +1,8 @@
+# Core (required to build/score networks)
+numpy>=1.26
+onnx>=1.16
+onnxruntime>=1.17
+
+# Used by the official neurogolf_utils.py (profiling report + notebook display).
+# Only needed if you call the vendored module's verify_network / model_profile.
+onnx-tool>=0.9

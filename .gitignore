@@ -1,0 +1,21 @@
+# Competition data (place task001.json ... task400.json here; ~97MB, not tracked)
+/data/*.json
+
+# Build artifacts
+/build/
+/submission/
+/submission.zip
+*.onnx
+
+# ONNX Runtime profiling traces (written to cwd by the scorer, e.g. 001_...json)
+onnxruntime_profile*.json
+[0-9][0-9][0-9]_*.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
