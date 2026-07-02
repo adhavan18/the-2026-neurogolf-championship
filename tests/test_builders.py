@@ -54,3 +54,35 @@ def test_conv_shapes():
 
 def test_colormap_conv():
     _check(B.make_colormap_conv({1: 2, 3: 4}))
+
+
+def test_conv2():
+    w1 = np.zeros((4, 10, 3, 3), dtype=np.float32)
+    w2 = np.zeros((10, 4, 1, 1), dtype=np.float32)
+    _check(B.make_conv2(w1, np.zeros(4), w2, np.zeros(10)))
+
+
+def test_reduce_head():
+    oh, ow = 3, 3
+    weight = np.zeros((oh, ow, 10, 300), dtype=np.float32)
+    bias = np.zeros((oh, ow, 10), dtype=np.float32)
+    _check(B.make_reduce_head(weight, bias, oh, ow, ["rs"]))
+
+
+def test_cellmap_gather():
+    oh, ow, w = 2, 2, 2
+    src = np.array([0, 1, 2, 3])
+    cmap = [{0: 0, 1: 1} for _ in range(4)]
+    _check(B.make_cellmap_gather(src, cmap, w, oh, ow))
+
+
+def test_pixel_upscale():
+    _check(B.make_pixel_upscale(2, 2))
+    _check(B.make_pixel_upscale(1, 2))
+
+
+def test_flat_head():
+    h, w, oh, ow = 3, 3, 2, 2
+    weight = np.zeros((10 * h * w, 10 * oh * ow), dtype=np.float32)
+    bias = np.zeros(10 * oh * ow, dtype=np.float32)
+    _check(B.make_flat_head(weight, bias, h, w, oh, ow))

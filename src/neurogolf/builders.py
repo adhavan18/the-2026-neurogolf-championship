@@ -30,11 +30,12 @@ _IR_VERSION = 10
 _OPSET = [helper.make_opsetid("", 10)]
 
 
-def _finalize(nodes, initializers, name: str = "graph") -> onnx.ModelProto:
+def _finalize(nodes, initializers, name: str = "graph", opset: int = 10) -> onnx.ModelProto:
     x = helper.make_tensor_value_info("input", _DTYPE, list(GRID))
     y = helper.make_tensor_value_info("output", _DTYPE, list(GRID))
     graph = helper.make_graph(nodes, name, [x], [y], initializers)
-    return helper.make_model(graph, ir_version=_IR_VERSION, opset_imports=_OPSET)
+    opsets = _OPSET if opset == 10 else [helper.make_opsetid("", opset)]
+    return helper.make_model(graph, ir_version=_IR_VERSION, opset_imports=opsets)
 
 
 def make_identity() -> onnx.ModelProto:
@@ -89,6 +90,225 @@ def make_conv(
         "Conv", inputs, ["output"], kernel_shape=[k, k], pads=[pad, pad, pad, pad]
     )
     return _finalize([node], inits)
+
+
+def make_conv2(
+    w1: np.ndarray,
+    b1: np.ndarray,
+    w2: np.ndarray,
+    b2: np.ndarray,
+) -> onnx.ModelProto:
+    """Two-layer conv net: ``output = conv2(relu(conv1(input)))``.
+
+    ``w1`` is ``[H, 10, k1, k1]``, ``w2`` is ``[10, H, k2, k2]``; both convs use
+    ``same`` padding so the spatial size stays 30x30.  The two intermediate
+    tensors (pre-activation and ReLU output, each ``[1, H, 30, 30]`` float32)
+    cost ``2 * H * 3600`` bytes of memory, so keep ``H`` small.
+    """
+    w1 = np.asarray(w1, dtype=np.float32)
+    w2 = np.asarray(w2, dtype=np.float32)
+    hidden, in_c, k1, k1b = w1.shape
+    out_c, hidden2, k2, k2b = w2.shape
+    if in_c != CHANNELS or out_c != CHANNELS or hidden != hidden2 or k1 != k1b or k2 != k2b:
+        raise ValueError(f"bad shapes: w1={w1.shape} w2={w2.shape}")
+    b1 = np.asarray(b1, dtype=np.float32).reshape(hidden)
+    b2 = np.asarray(b2, dtype=np.float32).reshape(CHANNELS)
+    p1, p2 = k1 // 2, k2 // 2
+    inits = [
+        helper.make_tensor("W1", _DTYPE, list(w1.shape), w1.reshape(-1).tolist()),
+        helper.make_tensor("B1", _DTYPE, [hidden], b1.tolist()),
+        helper.make_tensor("W2", _DTYPE, list(w2.shape), w2.reshape(-1).tolist()),
+        helper.make_tensor("B2", _DTYPE, [CHANNELS], b2.tolist()),
+    ]
+    nodes = [
+        helper.make_node(
+            "Conv", ["input", "W1", "B1"], ["h_pre"],
+            kernel_shape=[k1, k1], pads=[p1, p1, p1, p1],
+        ),
+        helper.make_node("Relu", ["h_pre"], ["h"]),
+        helper.make_node(
+            "Conv", ["h", "W2", "B2"], ["output"],
+            kernel_shape=[k2, k2], pads=[p2, p2, p2, p2],
+        ),
+    ]
+    return _finalize(nodes, inits)
+
+
+# Feature blocks for :func:`make_reduce_head`: name -> (ONNX reduce op, axis).
+# Each produces a [1, 10, 30] tensor (per-color row/col sums or occupancies).
+REDUCE_BLOCKS = {
+    "rs": ("ReduceSum", 3),
+    "cs": ("ReduceSum", 2),
+    "rm": ("ReduceMax", 3),
+    "cm": ("ReduceMax", 2),
+}
+
+
+def make_reduce_head(
+    weight: np.ndarray,
+    bias: np.ndarray,
+    oh: int,
+    ow: int,
+    blocks: Sequence[str],
+) -> onnx.ModelProto:
+    """Reduce features -> linear head -> fixed ``oh x ow`` output grid.
+
+    For tasks whose output is always the same small shape regardless of input
+    size.  ``weight`` is ``[oh, ow, 10, F]`` and ``bias`` ``[oh, ow, 10]`` where
+    ``F = 300 * len(blocks)``: per output cell, a 10-class linear classifier
+    over the concatenated reduce features.  The head is a single MatMul+Add to
+    ``[1, 10*oh*ow]``, reshaped to ``[1, 10, oh, ow]`` and padded to 30x30 with
+    constant ``-1`` so the out-of-grid cells threshold to clear.
+    """
+    F = weight.shape[-1]
+    if F != 300 * len(blocks):
+        raise ValueError(f"F={F} does not match blocks={blocks}")
+    oc = CHANNELS * oh * ow
+    w_big = np.zeros((F, oc), dtype=np.float32)
+    b_big = np.zeros(oc, dtype=np.float32)
+    for r in range(oh):
+        for c in range(ow):
+            for o in range(CHANNELS):
+                j = o * oh * ow + r * ow + c
+                w_big[:, j] = weight[r, c, o]
+                b_big[j] = bias[r, c, o]
+    nodes, inits, outs = [], [], []
+    for bname in blocks:
+        op, ax = REDUCE_BLOCKS[bname]
+        nodes.append(helper.make_node(op, ["input"], [bname], axes=[ax], keepdims=0))
+        outs.append(bname)
+    if len(outs) > 1:
+        nodes.append(helper.make_node("Concat", outs, ["cat"], axis=1))
+        src = "cat"
+    else:
+        src = outs[0]
+    inits.append(helper.make_tensor("shape_flat", TensorProto.INT64, [2], [1, F]))
+    nodes.append(helper.make_node("Reshape", [src, "shape_flat"], ["feats"]))
+    inits.append(helper.make_tensor("Wbig", _DTYPE, [F, oc], w_big.reshape(-1).tolist()))
+    inits.append(helper.make_tensor("Bbig", _DTYPE, [oc], b_big.tolist()))
+    nodes.append(helper.make_node("MatMul", ["feats", "Wbig"], ["mm"]))
+    nodes.append(helper.make_node("Add", ["mm", "Bbig"], ["logits"]))
+    inits.append(helper.make_tensor("shape_out", TensorProto.INT64, [4], [1, CHANNELS, oh, ow]))
+    nodes.append(helper.make_node("Reshape", ["logits", "shape_out"], ["small"]))
+    nodes.append(
+        helper.make_node(
+            "Pad", ["small"], ["output"], mode="constant", value=-1.0,
+            pads=[0, 0, 0, 0, 0, 0, 30 - oh, 30 - ow],
+        )
+    )
+    return _finalize(nodes, inits)
+
+
+def make_cellmap_gather(
+    src: np.ndarray,
+    cmap: Sequence[Dict[int, int]],
+    w: int,
+    oh: int,
+    ow: int,
+) -> onnx.ModelProto:
+    """Fixed cell-to-cell mapping via GatherND (for fixed input/output dims).
+
+    ``src[d]`` is the flat input-cell index feeding output cell ``d`` (row-major
+    over ``oh x ow``); ``cmap[d]`` maps input color -> output color for that
+    cell (injective).  Index tensor ``idx[10, oh, ow, 4]`` holds the coordinate
+    ``(0, cin, r', c')`` whose one-hot value lands in output channel ``o`` at
+    ``(r, c)``; channels a cell never produces read the dead coordinate
+    ``(0, 0, 29, 29)``, which is guaranteed all-zero because the (fixed) input
+    grid is smaller than 30x30.  Requires opset >= 11 for GatherND (13 used;
+    verified compatible with the official scorer).
+    """
+    idx = np.zeros((CHANNELS, oh, ow, 4), dtype=np.int64)
+    idx[..., 2] = 29
+    idx[..., 3] = 29  # dead coordinate: beyond any grid < 30x30
+    for d in range(oh * ow):
+        r, c = divmod(d, ow)
+        rs, cs = divmod(int(src[d]), w)
+        inv = {o: i for i, o in cmap[d].items()}
+        for o in range(CHANNELS):
+            if o in inv:
+                idx[o, r, c] = [0, inv[o], rs, cs]
+    inits = [
+        helper.make_tensor("idx", TensorProto.INT64, [CHANNELS, oh, ow, 4], idx.reshape(-1).tolist()),
+        helper.make_tensor("oshape", TensorProto.INT64, [4], [1, CHANNELS, oh, ow]),
+        helper.make_tensor("pads", TensorProto.INT64, [8], [0, 0, 0, 0, 0, 0, 30 - oh, 30 - ow]),
+    ]
+    nodes = [
+        helper.make_node("GatherND", ["input", "idx"], ["g"]),  # [10, oh, ow]
+        helper.make_node("Reshape", ["g", "oshape"], ["small"]),
+        helper.make_node("Pad", ["small", "pads"], ["output"], mode="constant"),
+    ]
+    return _finalize(nodes, inits, opset=13)
+
+
+def make_pixel_upscale(sr: int, sc: int) -> onnx.ModelProto:
+    """Pixel magnification by ``(sr, sc)`` via grouped ConvTranspose.
+
+    Crops the input to ``[1, 10, 30//sr, 30//sc]`` with negative Pad (safe when
+    every input grid fits in the crop), then a per-channel all-ones
+    ``ConvTranspose`` with stride ``(sr, sc)`` duplicates each pixel into an
+    ``sr x sc`` block, landing exactly on 30x30.
+    """
+    ch, cw = 30 // sr, 30 // sc
+    weight = np.ones((CHANNELS, 1, sr, sc), dtype=np.float32)
+    inits = [
+        helper.make_tensor("W", _DTYPE, [CHANNELS, 1, sr, sc], weight.reshape(-1).tolist())
+    ]
+    nodes = [
+        helper.make_node(
+            "Pad", ["input"], ["crop"], mode="constant", value=0.0,
+            pads=[0, 0, 0, 0, 0, 0, ch - 30, cw - 30],
+        ),
+        helper.make_node(
+            "ConvTranspose", ["crop", "W"], ["output"], strides=[sr, sc], group=CHANNELS
+        ),
+    ]
+    return _finalize(nodes, inits)
+
+
+def make_flat_head(
+    weight: np.ndarray,
+    bias: np.ndarray,
+    h: int,
+    w: int,
+    oh: int,
+    ow: int,
+) -> onnx.ModelProto:
+    """Linear head over the flattened one-hot grid, for fixed input/output dims.
+
+    ``weight`` is ``[10*h*w, 10*oh*ow]`` and ``bias`` ``[10*oh*ow]``: a 10-class
+    linear classifier per output cell over the full (cropped) input grid.  This
+    expresses any transform where each output cell is a linearly separable
+    function of the whole input — a strict superset of cell-mapping, at higher
+    parameter cost, so register it after the cheaper solvers.
+
+    Graph: Pad-crop input to ``[1,10,h,w]`` -> Reshape ``[1, 10hw]`` -> MatMul +
+    Add -> Reshape ``[1,10,oh,ow]`` -> Pad to 30x30 with ``-1`` (clear).
+    """
+    f = CHANNELS * h * w
+    oc = CHANNELS * oh * ow
+    weight = np.asarray(weight, dtype=np.float32).reshape(f, oc)
+    bias = np.asarray(bias, dtype=np.float32).reshape(oc)
+    inits = [
+        helper.make_tensor("shape_flat", TensorProto.INT64, [2], [1, f]),
+        helper.make_tensor("W", _DTYPE, [f, oc], weight.reshape(-1).tolist()),
+        helper.make_tensor("B", _DTYPE, [oc], bias.tolist()),
+        helper.make_tensor("shape_out", TensorProto.INT64, [4], [1, CHANNELS, oh, ow]),
+    ]
+    nodes = [
+        helper.make_node(
+            "Pad", ["input"], ["crop"], mode="constant", value=0.0,
+            pads=[0, 0, 0, 0, 0, 0, h - 30, w - 30],
+        ),
+        helper.make_node("Reshape", ["crop", "shape_flat"], ["feats"]),
+        helper.make_node("MatMul", ["feats", "W"], ["mm"]),
+        helper.make_node("Add", ["mm", "B"], ["logits"]),
+        helper.make_node("Reshape", ["logits", "shape_out"], ["small"]),
+        helper.make_node(
+            "Pad", ["small"], ["output"], mode="constant", value=-1.0,
+            pads=[0, 0, 0, 0, 0, 0, 30 - oh, 30 - ow],
+        ),
+    ]
+    return _finalize(nodes, inits)
 
 
 def make_colormap_conv(mapping: Dict[int, int]) -> onnx.ModelProto:
