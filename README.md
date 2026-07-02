@@ -87,7 +87,27 @@ PYTHONPATH=src python -m pytest tests -q
 
 ## Baseline results
 
-<!-- RESULTS -->
+Running `build_submission.py` over all 400 tasks with the current solvers,
+scored by the vendored official scorer:
+
+| Solver        | Tasks | Cost each | Points each | Subtotal |
+|---------------|------:|----------:|------------:|---------:|
+| `colormap`    |     4 |        10 |      22.697 |   90.790 |
+| `linear_conv` |    15 |       910 |      18.187 |  272.798 |
+| **Total**     |  **19** |         — |           — | **363.588** |
+
+- **Solved:** 19 / 400 tasks; **local score ≈ 363.6** / 10 000.
+- **Color-maps** (`task016, 276, 309, 337`) use a 10-parameter `Gather` that
+  permutes/selects color channels — the cheapest correct form for a global
+  color remap.
+- **Linear convs** (`task053, 073, 095, 127, 147, 171, 230, 258, 266, 272, 282,
+  283, 294, 317, 331`) are a single 3×3 `Conv` (+bias) whose integer weights are
+  fit by a hard-margin perceptron; each is a genuinely local, linearly-separable
+  rule. Memory cost is 0 (single node), so cost = params = 910.
+
+Every network in `submission.zip` passes the official verifier on
+`train + test + arc-gen`. This is a **verified baseline**, not a competitive
+entry — see below for why most tasks need bespoke networks and where to go next.
 
 ## Scope & roadmap
 
