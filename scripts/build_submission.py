@@ -27,7 +27,17 @@ def main() -> None:
     ap.add_argument("--out-dir", default="submission", help="output directory for ONNX files")
     ap.add_argument("--zip", default="submission.zip", help="output zip path")
     ap.add_argument("--no-zip", action="store_true", help="skip zipping")
+    ap.add_argument(
+        "--skip-solvers", nargs="*", default=[],
+        help="solver function names to disable (e.g. solve_conv2)",
+    )
     args = ap.parse_args()
+
+    if args.skip_solvers:
+        from neurogolf import solvers as S
+
+        S.REGISTRY[:] = [fn for fn in S.REGISTRY if fn.__name__ not in set(args.skip_solvers)]
+        print(f"Disabled: {args.skip_solvers}; {len(S.REGISTRY)} solvers active")
 
     nums = args.tasks if args.tasks else available_task_nums()
     if not nums:

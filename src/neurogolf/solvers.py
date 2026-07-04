@@ -150,12 +150,16 @@ def solve_colormap(task: Task) -> Iterator[Candidate]:
     )
 
 
-def _fit_perceptron(X: np.ndarray, y: np.ndarray, iters: int = 80):
-    """One-vs-rest hard-margin perceptron with integer weights.
+def _fit_perceptron(X: np.ndarray, y: np.ndarray, iters: int = 80, margin: float = 0.0):
+    """One-vs-rest perceptron with integer weights and an optional margin.
 
     Returns ``(W[C,F], b[C], converged)``.  On convergence the sign scheme
     satisfies exactly the competition's threshold: score>0 for the target
-    channel and <=0 for every other channel, at every training cell.
+    channel and <=0 for every other channel, at every training cell — and, with
+    ``margin > 0``, by at least that margin, which pushes the decision boundary
+    away from the training points.  This matters for the *private* hold-out:
+    zero-margin solutions fit the public examples exactly but sit razor-close
+    to them, and the first slightly-novel private grid flips a cell.
     """
     n, f = X.shape
     W = np.zeros((CHANNELS, f), dtype=np.float64)
@@ -166,8 +170,8 @@ def _fit_perceptron(X: np.ndarray, y: np.ndarray, iters: int = 80):
     converged = False
     for _ in range(iters):
         scores = (X @ W.T + b).T  # [C, n]
-        pos_wrong = (Y > 0) & (scores <= 0)
-        neg_wrong = (Y < 0) & (scores > 0)
+        pos_wrong = (Y > 0) & (scores <= margin)
+        neg_wrong = (Y < 0) & (scores > -margin)
         wrong = pos_wrong | neg_wrong
         if not wrong.any():
             converged = True
@@ -177,6 +181,10 @@ def _fit_perceptron(X: np.ndarray, y: np.ndarray, iters: int = 80):
             if idx.any():
                 W[o] += (Y[o, idx][:, None] * X[idx]).sum(0)
                 b[o] += Y[o, idx].sum()
+    if margin > 0.0 and not converged:
+        # Margin unreachable in the budget: fall back to plain separation so we
+        # never lose a task that the zero-margin fit could solve.
+        return _fit_perceptron(X, y, iters=iters, margin=0.0)
     return W, b, converged
 
 
@@ -258,7 +266,7 @@ def solve_linear_conv(task: Task, kernels=(1, 3, 5, 7), iters: int = 300) -> Ite
         if built is None:
             return
         X, y = built
-        W, b, converged = _fit_perceptron(X, y, iters=iters)
+        W, b, converged = _fit_perceptron(X, y, iters=iters, margin=2.0)
         if not converged or not _numpy_exact(X, y, W, b):
             continue
         weight = W.reshape(CHANNELS, CHANNELS, k, k).astype(np.float32)
@@ -503,7 +511,7 @@ def solve_const_shape(task: Task) -> Iterator[Candidate]:
         ok = True
         for r in range(oh):
             for c in range(ow):
-                W, b, converged = _fit_perceptron(feats, tgt[:, r, c], iters=400)
+                W, b, converged = _fit_perceptron(feats, tgt[:, r, c], iters=600, margin=5.0)
                 if not converged:
                     ok = False
                     break
@@ -710,7 +718,7 @@ def solve_flat_head(task: Task) -> Iterator[Candidate]:
     bias = np.zeros(oc, dtype=np.float32)
     for r in range(oh):
         for c in range(ow):
-            W, b, converged = _fit_perceptron(feats, tgt[:, r, c], iters=400)
+            W, b, converged = _fit_perceptron(feats, tgt[:, r, c], iters=600, margin=5.0)
             if not converged:
                 return
             for o in range(CHANNELS):
