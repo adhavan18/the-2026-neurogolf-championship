@@ -206,30 +206,30 @@ def make_cellmap_gather(
     oh: int,
     ow: int,
 ) -> onnx.ModelProto:
-    """Fixed cell-to-cell mapping via GatherND (for fixed input/output dims).
+    """Fixed cell-to-cell mapping via flat Gather (for fixed input/output dims).
 
     ``src[d]`` is the flat input-cell index feeding output cell ``d`` (row-major
     over ``oh x ow``); ``cmap[d]`` maps input color -> output color for that
-    cell.  Index tensor ``idx[10, oh, ow, 4]`` holds the coordinate
-    ``(0, cin, r', c')`` whose one-hot value lands in output channel ``o`` at
-    ``(r, c)``; channels a cell never produces read the dead coordinate
-    ``(0, 0, 29, 29)``, which is guaranteed all-zero because the (fixed) input
-    grid is smaller than 30x30.
+    cell.  The input is reshaped to a flat ``[9000]`` vector; an index tensor
+    ``idx[10, oh, ow]`` holds the flat position ``cin*900 + r'*30 + c'`` whose
+    one-hot value lands in output channel ``o`` at ``(r, c)``.  Channels a cell
+    never produces read the dead position ``29*30 + 29`` (channel 0 at cell
+    (29,29)), guaranteed all-zero because the (fixed) input grid is smaller
+    than 30x30.
 
     Color *merges* (several input colors mapping to one output color) are
     handled with one extra index table per merge rank, summed with ``Add``: at
     most one of the gathered one-hots is 1 per cell, so the sum stays exact.
-    Requires opset >= 11 for GatherND (13 used; verified compatible with the
-    official scorer).
+
+    Everything is plain opset 10 — Reshape, Gather, Add, Pad — matching the op
+    profile of the organizers' reference networks.
     """
+    dead = 29 * 30 + 29  # flat position of channel 0, cell (29, 29)
     tables: list[np.ndarray] = []
 
     def _table(k: int) -> np.ndarray:
         while len(tables) <= k:
-            t = np.zeros((CHANNELS, oh, ow, 4), dtype=np.int64)
-            t[..., 2] = 29
-            t[..., 3] = 29  # dead coordinate: beyond any grid < 30x30
-            tables.append(t)
+            tables.append(np.full((CHANNELS, oh, ow), dead, dtype=np.int64))
         return tables[k]
 
     _table(0)
@@ -241,24 +241,29 @@ def make_cellmap_gather(
             by_out.setdefault(o, []).append(cin)
         for o, cins in by_out.items():
             for k, cin in enumerate(cins):
-                _table(k)[o, r, c] = [0, cin, rs, cs]
+                _table(k)[o, r, c] = cin * 900 + rs * 30 + cs
     inits = [
+        helper.make_tensor("fshape", TensorProto.INT64, [1], [900 * CHANNELS]),
         helper.make_tensor("oshape", TensorProto.INT64, [4], [1, CHANNELS, oh, ow]),
-        helper.make_tensor("pads", TensorProto.INT64, [8], [0, 0, 0, 0, 0, 0, 30 - oh, 30 - ow]),
     ]
-    nodes = []
+    nodes = [helper.make_node("Reshape", ["input", "fshape"], ["flat"])]
     for k, t in enumerate(tables):
         inits.append(
-            helper.make_tensor(f"idx{k}", TensorProto.INT64, [CHANNELS, oh, ow, 4], t.reshape(-1).tolist())
+            helper.make_tensor(f"idx{k}", TensorProto.INT64, [CHANNELS, oh, ow], t.reshape(-1).tolist())
         )
-        nodes.append(helper.make_node("GatherND", ["input", f"idx{k}"], [f"g{k}"]))
+        nodes.append(helper.make_node("Gather", ["flat", f"idx{k}"], [f"g{k}"], axis=0))
     acc = "g0"
     for k in range(1, len(tables)):
         nodes.append(helper.make_node("Add", [acc, f"g{k}"], [f"sum{k}"]))
         acc = f"sum{k}"
     nodes.append(helper.make_node("Reshape", [acc, "oshape"], ["small"]))
-    nodes.append(helper.make_node("Pad", ["small", "pads"], ["output"], mode="constant"))
-    return _finalize(nodes, inits, opset=13)
+    nodes.append(
+        helper.make_node(
+            "Pad", ["small"], ["output"], mode="constant", value=0.0,
+            pads=[0, 0, 0, 0, 0, 0, 30 - oh, 30 - ow],
+        )
+    )
+    return _finalize(nodes, inits)
 
 
 def make_pixel_upscale(sr: int, sc: int) -> onnx.ModelProto:
