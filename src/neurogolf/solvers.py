@@ -769,3 +769,60 @@ def solve_fixed_crop(task: Task) -> Iterator[Candidate]:
         f"window {oh}x{ow} at ({a},{c})",
         est_cost=40 * oh * ow,
     )
+
+
+# ----------------------------------------------------------------------------- #
+# Random-ReLU-feature head (non-linear whole-grid rules, fixed dims)
+# ----------------------------------------------------------------------------- #
+
+_RKS_SEED = 0
+_RKS_MAX_BYTES = 1.3 * 1024 * 1024  # stay under the 1.44MB file cap
+
+
+@register
+def solve_rks_head(task: Task) -> Iterator[Candidate]:
+    """Fixed-dims tasks not linearly separable on the raw grid: lift with a
+    fixed random ternary ReLU layer, then fit per-cell margin perceptrons on
+    ``[x, phi]``.  Registered last — strictly more expensive than flat_head."""
+    pairs = task.scored_pairs
+    if not pairs:
+        return
+    (h, w), (oh, ow) = pairs[0].in_shape, pairs[0].out_shape
+    if any(p.in_shape != (h, w) or p.out_shape != (oh, ow) for p in pairs):
+        return
+    if h * w > 120 or oh * ow > 120:
+        return
+    f, oc = CHANNELS * h * w, CHANNELS * oh * ow
+    hid = min(4 * f, 600)
+    params = hid * (f + 1) + (f + hid + 1) * oc
+    if params * 4 > _RKS_MAX_BYTES:
+        return
+    n = len(pairs)
+    onehot = np.zeros((n, CHANNELS, h, w), dtype=np.float32)
+    rr, cc = np.meshgrid(np.arange(h), np.arange(w), indexing="ij")
+    for i, p in enumerate(pairs):
+        onehot[i, np.asarray(p.input), rr, cc] = 1.0
+    X = onehot.reshape(n, f)
+    rng = np.random.default_rng(_RKS_SEED)
+    r1 = rng.integers(-1, 2, size=(hid, f)).astype(np.float32)
+    c1 = rng.integers(-2, 1, size=hid).astype(np.float32)
+    phi = np.maximum(r1 @ X.T + c1[:, None], 0).T  # [n, hid]
+    feats = np.concatenate([X, phi, np.ones((n, 1), dtype=np.float32)], 1)
+    tgt = np.array([p.output for p in pairs]).reshape(n, -1)
+    weight = np.zeros((f + hid, oc), dtype=np.float32)
+    bias = np.zeros(oc, dtype=np.float32)
+    for d in range(oh * ow):
+        r, c = divmod(d, ow)
+        W, b, converged = _fit_perceptron(feats, tgt[:, d], iters=600, margin=3.0)
+        if not converged:
+            return
+        for o in range(CHANNELS):
+            j = o * oh * ow + r * ow + c
+            weight[:, j] = W[o, :-1]
+            bias[j] = b[o] + W[o, -1]  # fold the constant feature into the bias
+    yield Candidate(
+        B.make_rks_head(r1, c1, weight, bias, h, w, oh, ow),
+        "rks_head",
+        f"{h}x{w}->{oh}x{ow} H={hid}",
+        est_cost=params,
+    )

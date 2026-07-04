@@ -357,6 +357,62 @@ def make_flat_head(
     return _finalize(nodes, inits)
 
 
+def make_rks_head(
+    r1: np.ndarray,
+    c1: np.ndarray,
+    weight: np.ndarray,
+    bias: np.ndarray,
+    h: int,
+    w: int,
+    oh: int,
+    ow: int,
+) -> onnx.ModelProto:
+    """Random-ReLU-feature head for fixed input/output dims (opset 10).
+
+    ``phi = relu(r1 @ x + c1)`` with a *fixed* random layer ``r1 [H, 10hw]``;
+    the trained head reads ``[x, phi, 1]`` per output cell:
+    ``weight [10hw + H + 1, 10*oh*ow]``, ``bias [10*oh*ow]`` (the constant
+    feature is folded into ``bias`` by the solver, so ``weight`` here is
+    ``[10hw + H, oc]``).  Non-linear whole-grid rules that a linear
+    :func:`make_flat_head` cannot express become linearly separable in the
+    lifted feature space.
+    """
+    f = CHANNELS * h * w
+    hid = r1.shape[0]
+    oc = CHANNELS * oh * ow
+    r1 = np.asarray(r1, dtype=np.float32).reshape(hid, f)
+    c1 = np.asarray(c1, dtype=np.float32).reshape(hid)
+    weight = np.asarray(weight, dtype=np.float32).reshape(f + hid, oc)
+    bias = np.asarray(bias, dtype=np.float32).reshape(oc)
+    inits = [
+        helper.make_tensor("shape_flat", TensorProto.INT64, [2], [1, f]),
+        helper.make_tensor("R1", _DTYPE, [f, hid], r1.T.reshape(-1).tolist()),
+        helper.make_tensor("C1", _DTYPE, [hid], c1.tolist()),
+        helper.make_tensor("W", _DTYPE, [f + hid, oc], weight.reshape(-1).tolist()),
+        helper.make_tensor("B", _DTYPE, [oc], bias.tolist()),
+        helper.make_tensor("shape_out", TensorProto.INT64, [4], [1, CHANNELS, oh, ow]),
+    ]
+    nodes = [
+        helper.make_node(
+            "Pad", ["input"], ["crop"], mode="constant", value=0.0,
+            pads=[0, 0, 0, 0, 0, 0, h - 30, w - 30],
+        ),
+        helper.make_node("Reshape", ["crop", "shape_flat"], ["x"]),
+        helper.make_node("MatMul", ["x", "R1"], ["pre"]),
+        helper.make_node("Add", ["pre", "C1"], ["pre_b"]),
+        helper.make_node("Relu", ["pre_b"], ["phi"]),
+        helper.make_node("Concat", ["x", "phi"], ["feats"], axis=1),
+        helper.make_node("MatMul", ["feats", "W"], ["mm"]),
+        helper.make_node("Add", ["mm", "B"], ["logits"]),
+        helper.make_node("Reshape", ["logits", "shape_out"], ["small"]),
+        helper.make_node(
+            "Pad", ["small"], ["output"], mode="constant", value=-1.0,
+            pads=[0, 0, 0, 0, 0, 0, 30 - oh, 30 - ow],
+        ),
+    ]
+    return _finalize(nodes, inits)
+
+
 def make_colormap_conv(mapping: Dict[int, int]) -> onnx.ModelProto:
     """Color map as a 1x1 conv (cost 100).  Handles color *merges* (many->one).
 

@@ -562,14 +562,14 @@
   },
   {
     "task": 52,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "rks_head",
+    "detail": "3x3->3x3 H=360",
+    "params": 73356,
+    "memory": 7920,
+    "cost": 81276,
+    "points": 13.694393950997096,
+    "n_candidates": 1
   },
   {
     "task": 53,
@@ -1123,14 +1123,14 @@
   },
   {
     "task": 103,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "rks_head",
+    "detail": "3x3->1x1 H=360",
+    "params": 37276,
+    "memory": 6960,
+    "cost": 44236,
+    "points": 14.302705783804749,
+    "n_candidates": 1
   },
   {
     "task": 104,
@@ -2509,14 +2509,14 @@
   },
   {
     "task": 229,
-    "solved": false,
-    "solver": "",
-    "detail": "",
-    "params": null,
-    "memory": null,
-    "cost": null,
-    "points": 0.0,
-    "n_candidates": 0
+    "solved": true,
+    "solver": "rks_head",
+    "detail": "3x3->3x3 H=360",
+    "params": 73356,
+    "memory": 7920,
+    "cost": 81276,
+    "points": 13.694393950997096,
+    "n_candidates": 1
   },
   {
     "task": 230,
