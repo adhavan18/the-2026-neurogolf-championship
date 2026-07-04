@@ -110,17 +110,19 @@ Running the full pipeline over all 400 tasks (four parallel shards merged with
 
 | Solver        | Tasks | Points |
 |---------------|------:|-------:|
-| `linear_conv` |    30 | 537.82 |
-| `flat_head`   |    32 | 447.22 |
-| `cellmap`     |    19 | 316.43 |
+| `flat_head`   |    43 | 612.12 |
+| `linear_conv` |    32 | 571.50 |
 | `const_shape` |    12 | 178.71 |
 | `colormap`    |     4 |  90.79 |
+| `cellmap`     |     6 |  84.50 |
 | `fixed_crop`  |     2 |  39.04 |
 | `upscale`     |     2 |  32.57 |
-| **Total**     | **101** | **1609.24** (all opset-10) |
+| **Total**     | **101** | **1609.24** |
 
-- **Solved: 101 / 400 tasks, local score ≈ 1642.6** / 10 000 (per-task results
-  in `results/baseline_manifest.json`).
+- **Solved: 101 / 400 tasks, local score ≈ 1609.2** / 10 000 (per-task results
+  in `results/baseline_manifest.json`). Every network is plain opset 10, using
+  only ops from the organizers' reference palette, after a first submission
+  scored 0.00 (see `git log`: one server-rejected file zeroes a whole zip).
 - Every network in `submission.zip` passes the official verifier on
   `train + test + arc-gen`; the private hold-out remains the usual caveat.
 - `conv2` (Conv→ReLU→Conv, gradient-fit) solved **zero** tasks in this sweep —
