@@ -888,7 +888,7 @@
     "memory": 9800,
     "cost": 250396,
     "points": 12.569201056360408,
-    "n_candidates": 2
+    "n_candidates": 1
   },
   {
     "task": 82,
@@ -2879,7 +2879,7 @@
     "memory": 1800,
     "cost": 9996,
     "points": 15.790059708045156,
-    "n_candidates": 2
+    "n_candidates": 1
   },
   {
     "task": 263,
