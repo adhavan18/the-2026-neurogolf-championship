@@ -117,7 +117,7 @@ Running the full pipeline over all 400 tasks (four parallel shards merged with
 | `colormap`    |     4 |  90.79 |
 | `fixed_crop`  |     2 |  39.04 |
 | `upscale`     |     2 |  32.57 |
-| **Total**     | **101** | **1642.59** |
+| **Total**     | **101** | **1609.24** (all opset-10) |
 
 - **Solved: 101 / 400 tasks, local score ≈ 1642.6** / 10 000 (per-task results
   in `results/baseline_manifest.json`).
